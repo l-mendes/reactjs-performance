@@ -1,4 +1,4 @@
-import { List, ListRowRenderer } from 'react-virtualized'
+import { List, AutoSizer, ListRowRenderer } from 'react-virtualized'
 
 import { ProductItem } from "./ProductItem";
 
@@ -11,13 +11,13 @@ interface SearchResultsProps {
     title: string;
   }>
   onAddToWishlist: (id: number) => void;
-} 
+}
 
 export function SearchResults({ totalPrice, results, onAddToWishlist }: SearchResultsProps) {
   const rowRenderer: ListRowRenderer = ({ index, key, style }) => {
     return (
       <div key={key} style={style}>
-        <ProductItem 
+        <ProductItem
           product={results[index]}
           onAddToWishlist={onAddToWishlist}
         />
@@ -29,14 +29,20 @@ export function SearchResults({ totalPrice, results, onAddToWishlist }: SearchRe
     <div>
       <h2>{totalPrice}</h2>
 
-      <List 
-        height={300}
-        rowHeight={25}
-        width={900}
-        overscanRowCount={5}
-        rowCount={results.length}
-        rowRenderer={rowRenderer}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh'}}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              height={height}
+              rowHeight={25}
+              width={width}
+              overscanRowCount={5}
+              rowCount={results.length}
+              rowRenderer={rowRenderer}
+            />
+          )}
+        </AutoSizer>
+      </div>
     </div>
   );
 }
@@ -56,8 +62,8 @@ export function SearchResults({ totalPrice, results, onAddToWishlist }: SearchRe
 
 /**
  * useMemo / useCallback
- * 
+ *
  * 1. Cálculos pesados
  * 2. Igualdade referencial (quando a gente repassa aquela informação a um componente filho)
- * 
+ *
  */
